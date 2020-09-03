@@ -6,20 +6,48 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  // Create an empty map so when we build Home widget we can use the arguments
+  Map data = {};
   @override
   Widget build(BuildContext context) {
+
+    data = ModalRoute.of(context).settings.arguments;
+    print(data);
     return Scaffold(
       body: SafeArea(
-          child: Column(
-            children: [
-              FlatButton.icon(
-                onPressed: (){
-                  Navigator.pushNamed(context, '/choose_location');
-                },
-                icon: Icon(Icons.edit_location),
-                label: Text('Edit Location'),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 120,0,0),
+            child: Column(
+              children: [
+                FlatButton.icon(
+                  onPressed: (){
+                    Navigator.pushNamed(context, '/choose_location');
+                  },
+                  icon: Icon(Icons.edit_location),
+                  label: Text('Edit Location'),
+                ),
+                SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Text(
+                  data['location'],
+                  style: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 2.0,
+                  ),
+                )
+              ],),
+                SizedBox(height: 20),
+                Text(
+                  data['time'],
+                  style: TextStyle(
+                    fontSize: 66,
+                  ),
+                ),
+              ],
+            ),
           )),
     );
   }
