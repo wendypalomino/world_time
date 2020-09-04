@@ -7,48 +7,80 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  // Create an empty map so when we build Home widget we can use the arguments
   Map data = {};
+
   @override
   Widget build(BuildContext context) {
 
-    data = ModalRoute.of(context).settings.arguments;
-    print(data);
+    data = data.isNotEmpty ? data : ModalRoute.of(context).settings.arguments;
+
+    // set background image
+    String bgImage = data['isDaytime'] ? 'day.jpeg' : 'nigth.jpeg';
+
     return Scaffold(
-      body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 120,0,0),
-            child: Column(
-              children: [
-                FlatButton.icon(
-                  onPressed: (){
-                    Navigator.pushNamed(context, '/choose_location');
-                  },
-                  icon: Icon(Icons.edit_location),
-                  label: Text('Edit Location'),
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/$bgImage'),
+              fit: BoxFit.cover,
+            )
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 120.0, 0, 0),
+          child: Column(
+            children: <Widget>[
+              FlatButton.icon(
+                onPressed: () async {
+                  dynamic result = await Navigator.pushNamed(context, '/location');
+                  if(result != null){
+                    setState(() {
+                      data = {
+                        'time': result['time'],
+                        'location': result['location'],
+                        'isDaytime': result['isDaytime'],
+                        'flag': result['flag']
+                      };
+                    });
+                  }
+                },
+                icon: Icon(
+                  Icons.edit_location,
+                  color: Colors.white,
                 ),
-                SizedBox(height: 20.0),
+                label: Text(
+                  'Choose a Location',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Text(
-                  data['location'],
-                  style: TextStyle(
-                    fontSize: 28,
-                    letterSpacing: 2.0,
+                children: <Widget>[
+                  Text(
+                    data['location'],
+                    style: TextStyle(
+                      fontSize: 28.0,
+                      letterSpacing: 2.0,
+                      color: Colors.white,
+                    ),
                   ),
-                )
-              ],),
-                SizedBox(height: 20),
-                Text(
+                ],
+              ),
+              SizedBox(height: 20.0),
+              Text(
                   data['time'],
                   style: TextStyle(
-                    fontSize: 66,
-                  ),
-                ),
-              ],
-            ),
-          )),
+                      fontSize: 66.0,
+                      color: Colors.white
+                  )
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
+
